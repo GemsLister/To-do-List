@@ -1,19 +1,10 @@
-import { storageLocal } from "./storage.js";
+import { storageFunc } from "./storage"; 
 
-export const projectFunc = (projects) => {
-    if(!Array.isArray(projects)) return;
-    class Project {
-        constructor(projectName) {
-            this.projectName = projectName;
-        }
-    } 
-
-    const array = [];
-    
-    projects.forEach(projectName => {
-        const projectClassName = new Project(projectName);
-        array.push(projectClassName);
-    });
-
-    storageLocal(array);
-}
+export const projectFunc = (arrayProject) => {
+  const projects = [];
+  if (!Array.isArray(arrayProject)) return;
+  arrayProject.forEach((projectObjects) => {
+    projects.push(projectObjects);
+  });
+  storageFunc(projects);
+};

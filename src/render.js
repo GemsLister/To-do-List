@@ -4,7 +4,8 @@ import listFlix from "./assets/listflix.png";
 import { projectFunc } from "./project";
 
 export const asideEle = document.querySelector("aside");
-let projectArray = JSON.parse(localStorage.getItem("pr")) || [];
+let projectArr = JSON.parse(localStorage.getItem("projectKey")) || [];
+
 export const asideAndMainRender = () => {
   // create logo
   const logo = new Image();
@@ -75,38 +76,43 @@ export const asideAndMainRender = () => {
   });
 };
 
-export const projectSaveBtnFunc = () => {
+export const projectBtnFunc = () => {
   const projectSaveBtn = document.querySelector(".save-project");
   const projectInput = document.querySelector("#project-input");
+
   projectSaveBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    projectArray.push({ projectName: projectInput.value });
-    projectFunc(projectArray);
-  });
-};
-
-projectSaveBtnFunc();
-
-export const displayProject = (storageProject) => {
-  // const storageProjectArray = [];
-  const iconsArray = ["fas fa-edit", "fa-solid fa-trash"];
-  storageProject.forEach((storedProjects) => {
-    const projectContainer = document.createElement("div");
-    projectContainer.className = "project-container";
-    projectContainer.style.cssText = `
-      display: flex;
-    `;
-    const projectText = document.createElement("p");
-    projectText.textContent = String(storedProjects.projectName);
-    projectContainer.appendChild(projectText);
-
-    for (const iconItems of iconsArray) {
-      const iconsContainer = document.createElement("div");
-      const icons = document.createElement("i");
-      icons.className = iconItems;
-      iconsContainer.appendChild(icons);
-      projectContainer.appendChild(iconsContainer);
+    const projectItem = projectInput.value.trim(); //to avoid adding blank input values
+    if (projectItem) {
+      projectArr.push({ projectName: projectInput.value });
+      const storageProjectArray = localStorage.setItem(
+        "projectKey",
+        JSON.stringify(projectArr)
+      );
+      projectFunc(storageProjectArray);
+      displayProject(projectArr);
     }
-    asideEle.appendChild(projectContainer);
   });
 };
+
+export const displayProject = (storageArray) => {
+  // removes the existing object
+  const previousContainer = asideEle.querySelector(".project-container");
+  if (previousContainer) asideEle.removeChild(previousContainer);
+
+  let projectContainer = document.createElement("div");
+  projectContainer.className = "project-container";
+  for (const storageItems of storageArray) {
+    const projectTitle = document.createElement("h3");
+    projectTitle.textContent = storageItems.projectName;
+    projectContainer.appendChild(projectTitle);
+  }
+
+  const insertProject = asideEle.querySelector(".items-container");
+  if (insertProject && insertProject.nextSibling) {
+    asideEle.insertBefore(projectContainer, itemsContainer.nextSibling);
+  } else asideEle.appendChild(projectContainer);
+}
+
+displayProject(projectArr);
+projectBtnFunc();

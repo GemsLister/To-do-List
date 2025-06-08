@@ -1,14 +1,12 @@
-import { displayProject } from "./render.js";
+import { displayProject } from "./render";
 
-export const storageLocal = (projectArr) => {
-    if(!Array.isArray(projectArr)) return;
+
+export const storageFunc = (projectArray) => {
+    if (!Array.isArray(projectArray)) return;
+    const storageArray = [];
+    projectArray.forEach (projects => {
+        storageArray.push(projects);
+    })
     
-    const projectStorage = [];
-    projectArr.forEach(pArr => {
-        projectStorage.push(pArr);
-    });
-    
-    localStorage.setItem('pr', JSON.stringify(projectStorage));
-    const getProject = JSON.parse(localStorage.getItem('pr')) || [];
-    displayProject(getProject);
+    displayProject(storageArray);
 } 
